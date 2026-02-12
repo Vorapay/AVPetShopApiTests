@@ -72,4 +72,30 @@ public class TestPet {
                         "Код ответа не совпал с ожидаемым. Ответ: " + responseBody)
         );
     }
+
+    @Test
+    @Feature("Pet")
+    @Severity(SeverityLevel.CRITICAL)
+    @Owner("artemy voropaev")
+    public void testGetIdNonexistentPet() {
+
+        Response response = step("Отправить GET запрос на получение ID несуществующего питомца", () ->
+                given()
+                        .contentType(ContentType.JSON)
+                        .header("Accept", "application/json")
+                        .when()
+                        .get(BASE_URL + "/pet/9999"));
+
+        String responseBody = response.getBody().asString();
+
+        step("Проверить что статус-код ответа == 404", () ->
+                assertEquals(404, response.getStatusCode(),
+                        "Код ответа не совпал с ожидаемым. Ответ: " + responseBody)
+        );
+
+        step("Проверить что текст ответа 'Pet not found'", () ->
+                assertEquals("Pet not found", responseBody,
+                        "Код ответа не совпал с ожидаемым. Ответ: " + responseBody)
+        );
+    }
 }
